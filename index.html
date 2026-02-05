@@ -221,26 +221,33 @@
       });
 
       function moveButton() {
-        const container = document.querySelector('.container'); // Stay within main container if possible
-        const containerRect = container.getBoundingClientRect();
-        const btnRect = noBtn.getBoundingClientRect();
+        // Use the button's offsetParent (the card) as the boundary
+        // This ensures the button stays within the card's visible area
+        const container = noBtn.offsetParent;
 
-        // Calculate safe boundaries
-        const maxX = containerRect.width - btnRect.width;
-        const maxY = containerRect.height - btnRect.height;
+        // Safety check
+        if (!container) return;
 
-        const randomX = Math.random() * maxX;
-        const randomY = Math.random() * maxY;
+        // Subtract button dimensions from container dimensions to get max safe coordinates
+        const maxX = container.clientWidth - noBtn.offsetWidth;
+        const maxY = container.clientHeight - noBtn.offsetHeight;
+
+        // Use Math.random() to generate a random position within safe bounds
+        // Math.random() returns 0-1, so we multiply by max width/height
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * maxY);
 
         noBtn.style.position = 'absolute';
         noBtn.style.left = `${randomX}px`;
         noBtn.style.top = `${randomY}px`;
 
         // Add fun text changes
-        const texts = ['Missed me! 😝', 'Too slow! 🏃‍♂️', 'Try again! 😉', 'Nope! 🙅‍♂️', 'Catch me! 🏎️'];
+        const texts = ['Missed me! 😝', 'Too slow! 🏃‍♂️', 'Try again! 😉', 'Nope! 🙅‍♂️', 'Catch me! 🏎️', 'Not today! 🚫'];
         noBtn.textContent = texts[Math.floor(Math.random() * texts.length)];
-        noBtn.style.transform = 'scale(0.9)'; // Shrink slightly to make it harder
-        setTimeout(() => noBtn.style.transform = 'scale(1)', 200);
+
+        // Add a little wobble animation
+        noBtn.style.transform = 'scale(0.9) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+        setTimeout(() => noBtn.style.transform = 'scale(1) rotate(0)', 200);
       }
 
       createHearts();
